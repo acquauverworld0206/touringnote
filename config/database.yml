@@ -50,6 +50,8 @@ test:
 #
 production:
   <<: *default
+  adapter: mysql2
   database: routelist_production
   username: routelist
   password: <%= ENV["ROUTELIST_DATABASE_PASSWORD"] %>
+  socket: /var/lib/mysql/mysql.sock
