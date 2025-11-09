@@ -1,0 +1,41 @@
+<div class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">マイスポット一覧</h1>
+    <%= link_to "新しいスポットを登録", new_spot_path, class: "inline-block bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600" %>
+  </div>
+
+  <div class="bg-white shadow-md rounded-lg">
+    <ul class="divide-y divide-gray-200">
+      <% if @spots.any? %>
+        <% @spots.each do |spot| %>
+          <li class="p-4 hover:bg-gray-50 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+              <%# 画像があれば表示し、なければプレースホルダーを表示 %>
+              <% if spot.photo.attached? %>
+                <%= image_tag spot.photo.variant(resize_to_limit: [100, 100]), class: "h-16 w-16 rounded-md object-contain bg-gray-100" %>
+              <% else %>
+                <div class="h-16 w-16 rounded-md bg-gray-200 flex items-center justify-center">
+                  <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+              <% end %>
+              <div>
+                <%= link_to spot_path(spot), class: "hover:underline" do %>
+                  <h2 class="font-semibold text-lg text-gray-900"><%= spot.name %></h2>
+                <% end %>
+                <p class="text-gray-600"><%= spot.description %></p>
+              </div>
+            </div>
+            <div class="flex space-x-2">
+              <%= link_to "編集", edit_spot_path(spot), class: "text-sm bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded" %>
+              <%= button_to "削除", spot_path(spot), method: :delete, data: { turbo_confirm: "本当に削除しますか？" }, class: "text-sm bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded" %>
+            </div>
+          </li>
+        <% end %>
+      <% else %>
+        <li class="p-4 text-center text-gray-500">
+          まだスポットは登録されていません。
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

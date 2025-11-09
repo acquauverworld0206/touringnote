@@ -1,0 +1,25 @@
+<div class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">マイグループ一覧</h1>
+    <%= link_to "新しいグループを作成", new_group_path, class: "inline-block bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600" %>
+  </div>
+
+  <div class="bg-white shadow-md rounded-lg">
+    <ul class="divide-y divide-gray-200">
+      <% if @groups.any? %>
+        <% @groups.each do |group| %>
+          <li class="p-4 hover:bg-gray-50">
+            <%= link_to group_path(group), class: "block" do %>
+              <h2 class="font-semibold text-lg text-gray-900"><%= group.name %></h2>
+              <p class="text-gray-600"><%= group.description %></p>
+            <% end %>
+          </li>
+        <% end %>
+      <% else %>
+        <li class="p-4 text-center text-gray-500">
+          まだグループはありません。
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

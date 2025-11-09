@@ -1,0 +1,68 @@
+<div class="w-full max-w-lg mx-auto my-8">
+  <div class="bg-white p-8 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">スポットを編集</h2>
+
+    <%= form_with(model: @spot, class: "space-y-6") do |form| %>
+      <% if @spot.errors.any? %>
+        <div id="error_explanation" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <strong class="font-bold"><%= pluralize(@spot.errors.count, "error") %> prohibited this spot from being saved:</strong>
+          <ul>
+            <% @spot.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div>
+        <%= form.label :name, "スポット名", class: "block text-sm font-medium text-gray-700" %>
+        <%= form.text_field :name, class: "mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-blue focus:border-primary-blue" %>
+      </div>
+
+      <div>
+        <%= form.label :description, "説明", class: "block text-sm font-medium text-gray-700" %>
+        <%= form.text_area :description, rows: 4, class: "mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-blue focus:border-primary-blue" %>
+      </div>
+
+      <div>
+        <%= form.label :address, "住所", class: "block text-sm font-medium text-gray-700" %>
+        <%= form.text_field :address, id: 'spot_address', class: "mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-blue focus:border-primary-blue" %>
+      </div>
+
+      <div>
+        <%= form.label :photo, "写真", class: "block text-sm font-medium text-gray-700" %>
+        <div class="mt-2">
+          <%# 既存の画像があれば表示し、なければプレビュー用のimgタグを非表示で用意 %>
+          <% if @spot.photo.attached? %>
+            <%= image_tag @spot.photo, id: "image-preview", class: "w-48 h-48 object-contain my-2 rounded-md bg-gray-100 border" %>
+          <% else %>
+            <img id="image-preview" class="hidden w-48 h-48 object-contain my-2 rounded-md bg-gray-100 border">
+          <% end %>
+        </div>
+        <%= form.label :photo, for: "spot_photo", class: "cursor-pointer inline-block bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded" do %>
+          <span>ファイルを選択</span>
+        <% end %>
+        <%= form.file_field :photo, id: "spot_photo", class: "hidden" %>
+      </div>
+
+      <div class="text-center">
+        <%= form.submit "更新する", class: "w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-blue-500 hover:bg-blue-600 cursor-pointer" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('turbo:load', function() {
+    const spotPhotoInput = document.getElementById('spot_photo');
+    const imagePreview = document.getElementById('image-preview');
+
+    spotPhotoInput.addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        imagePreview.src = URL.createObjectURL(file);
+        imagePreview.classList.remove('hidden');
+      }
+    });
+  });
+</script>

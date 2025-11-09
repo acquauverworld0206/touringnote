@@ -58,6 +58,9 @@ group :development do
 
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
+  
+  # Use foreman to run multiple processes in development
+  gem "foreman"
 
 end
 
@@ -72,3 +75,9 @@ group :production do
 end
 
 gem 'devise'
+
+gem "tailwindcss-rails"
+
+gem "image_processing", "~> 1.2"
+
+gem "geocoder"

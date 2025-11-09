@@ -1,0 +1,111 @@
+<div class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-6">
+    <div class="flex items-center space-x-4">
+      <h1 class="text-3xl font-bold text-gray-800"><%= @group.name %></h1>
+      <%# グループのホストにのみ編集リンクを表示 %>
+      <% if @group.host == current_user %>
+        <%= link_to "編集", edit_group_path(@group), class: "text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-1 px-3 rounded" %>
+      <% end %>
+    </div>
+    <p class="text-gray-600 mt-2"><%= @group.description %></p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <%# 左側カラム %>
+    <div class="md:col-span-2">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">メンバー</h2>
+      <div class="bg-white shadow-md rounded-lg">
+        <ul class="divide-y divide-gray-200">
+          <% @group.users.each do |member| %>
+            <li class="p-4 flex items-center space-x-4">
+              <%# ここにユーザーのアバターなどを表示するとより良くなります %>
+              <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
+              <div>
+                <p class="font-semibold text-gray-900"><%= member.nickname %></p>
+                <p class="text-sm text-gray-500"><%= member.email %></p>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
+    <%# 右側カラム %>
+    <div class="md:col-span-1">
+      <%# グループのホストにのみ招待フォームを表示 %>
+      <% if @group.host == current_user %>
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">メンバーを招待</h2>
+        <div class="bg-white shadow-md rounded-lg p-6">
+          <%= form_with(url: group_invitations_path(@group), method: :post, class: "space-y-4") do |form| %>
+            <div>
+              <%= label_tag :email, "招待するユーザーのメールアドレス", class: "block text-sm font-medium text-gray-700" %>
+              <%= email_field_tag :email, nil, required: true, class: "mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-blue focus:border-primary-blue" %>
+            </div>
+            <div>
+              <%= form.submit "招待する", class: "w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600" %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <%# 候補地一覧と追加フォーム (ページ下部) %>
+    <div class="md:col-span-3 mt-8">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold text-gray-800">候補地リスト</h2>
+        <%# 候補地追加フォーム (modelオプションでパラメータがネストされるように修正) %>
+        <%= form_with(model: [@group, @candidate_spot], class: "flex items-center space-x-2") do |form| %>
+          <%= form.collection_select :spot_id, @my_spots, :id, :name, { prompt: "マイスポットから選ぶ" }, { class: "block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-blue focus:border-primary-blue" } %>
+          <%= form.submit "候補に追加", class: "inline-block bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600 cursor-pointer" %>
+        <% end %>
+      </div>
+
+      <div class="bg-white shadow-md rounded-lg">
+        <ul class="divide-y divide-gray-200">
+          <% if @group.candidate_spots.any? %>
+            <%# .includes(:spot)でN+1問題を解消 %>
+            <% @group.candidate_spots.includes(:spot, :added_by, :votes).each do |candidate| %>
+              <%# 元のスポットが存在する場合のみリスト項目を表示する %>
+              <% if candidate.spot %>
+                <li class="p-4 flex items-center justify-between">
+                  <div class="flex items-center space-x-4">
+                    <%# 画像があれば表示し、なければプレースホルダーを表示 %>
+                    <% if candidate.spot.photo.attached? %>
+                      <%= image_tag candidate.spot.photo.variant(resize_to_limit: [100, 100]), class: "h-16 w-16 rounded-md object-contain bg-gray-100" %>
+                    <% else %>
+                      <div class="h-16 w-16 rounded-md bg-gray-200 flex items-center justify-center">
+                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                      </div>
+                    <% end %>
+                    <div>
+                      <%= link_to candidate.spot.name, spot_path(candidate.spot), class: "font-semibold text-lg text-gray-900 hover:underline" %>
+                      <p class="text-sm text-gray-500">追加者: <%= candidate.added_by&.nickname || "（退会したユーザー）" %></p>
+                    </div>
+                  </div>
+                  <%# 投票ボタンと投票数 %>
+                  <div class="flex items-center space-x-2">
+                    <span class="text-gray-600 font-bold"><%= candidate.votes.count %> 票</span>
+                    <%# 現在のユーザーの投票を取得 %>
+                    <% user_vote = candidate.votes.find_by(user_id: current_user.id) %>
+                    <% if user_vote %>
+                      <%# 投票済みの場合: 投票取り消しボタン %>
+                      <%= button_to "投票取消", candidate_spot_vote_path(candidate, user_vote), method: :delete, class: "text-sm bg-gray-400 hover:bg-gray-500 text-white font-bold py-1 px-3 rounded" %>
+                    <% else %>
+                      <%# 未投票の場合: 投票ボタン %>
+                      <%= button_to "投票する", candidate_spot_votes_path(candidate_spot_id: candidate.id), method: :post, class: "text-sm bg-orange-500 hover:bg-orange-600 text-white font-bold py-1 px-3 rounded" %>
+                      <% end %>
+                    </div>
+                  </div>
+                </li>
+              <% end %>
+            <% end %>
+          <% else %>
+            <li class="p-4 text-center text-gray-500">
+              まだ候補地はありません。「マイスポット」から候補を追加しましょう！
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

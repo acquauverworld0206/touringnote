@@ -2,15 +2,29 @@
 <html>
   <head>
     <title>Routelist</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+
+    <%# Google Maps JavaScript APIの読み込み %>
+    <script src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_maps_api_key %>&libraries=places" async></script>
   </head>
 
-  <body>
-    <%= yield %>
+  <%# トップページではダークテーマ、それ以外はライトテーマを適用 %>
+  <%# トップページとDevise関連ページではダークテーマを適用 %>
+  <body class="min-h-screen">
+    <%= render 'layouts/header' %>
+    
+    <% if current_page?(root_path) || devise_controller? %>
+      <main class="relative flex items-center justify-center p-4 pt-24" style="background-color: #0d1117; min-height: 100vh;">
+        <%= yield %>
+      </main>
+    <% else %>
+      <main class="relative flex flex-col items-center justify-start p-4 pt-24 bg-gray-100" style="min-height: 100vh;">
+        <%= yield %>
+      </main>
+    <% end %>
   </body>
 </html>

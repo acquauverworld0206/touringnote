@@ -1,0 +1,25 @@
+<div class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="bg-white shadow-md rounded-lg overflow-hidden">
+    <%# 画像が添付されていれば表示 %>
+    <% if @spot.photo.attached? %>
+      <%= image_tag @spot.photo, class: "w-full h-64 object-contain bg-gray-100" %>
+    <% end %>
+
+    <div class="p-6">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2"><%= @spot.name %></h1>
+      <p class="text-gray-700 mb-4"><%= @spot.description %></p>
+
+      <%# 緯度・経度が存在する場合のみ地図を表示 %>
+      <% if @spot.latitude.present? && @spot.longitude.present? %>
+        <h2 class="text-xl font-semibold text-gray-800 mt-6 mb-2">地図</h2>
+        <%# 地図を表示するためのコンテナ %>
+        <div id="map"
+             style="height: 400px;"
+             class="w-full rounded-md"
+             data-latitude="<%= @spot.latitude %>"
+             data-longitude="<%= @spot.longitude %>">
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

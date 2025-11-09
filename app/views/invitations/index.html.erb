@@ -1,0 +1,30 @@
+<div class="w-full max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">受信した招待</h1>
+  </div>
+
+  <div class="bg-white shadow-md rounded-lg">
+    <ul class="divide-y divide-gray-200">
+      <% if @pending_invitations.any? %>
+        <% @pending_invitations.each do |invitation| %>
+          <li class="p-4 flex justify-between items-center">
+            <div>
+              <p class="text-gray-900">
+                <span class="font-semibold"><%= invitation.sender.nickname %></span>さんから
+                <span class="font-semibold text-blue-600"><%= invitation.group.name %></span>への招待が届いています。
+              </p>
+            </div>
+            <div class="flex space-x-2">
+              <%= button_to "承認", accept_invitation_path(invitation), method: :patch, class: "text-sm bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded" %>
+              <%= button_to "拒否", reject_invitation_path(invitation), method: :patch, class: "text-sm bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded" %>
+            </div>
+          </li>
+        <% end %>
+      <% else %>
+        <li class="p-4 text-center text-gray-500">
+          新しい招待はありません。
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>
