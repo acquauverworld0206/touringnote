@@ -40,6 +40,22 @@ class SpotsController < ApplicationController
     redirect_to spots_path, notice: "スポットを削除しました。", status: :see_other
   end
 
+  def random_draw
+    # 自分のスポットリストを取得
+    my_spots = current_user.spots
+
+    # スポットが1つもない場合は、マイスポット一覧ページに戻ってメッセージを表示
+    if my_spots.empty?
+      redirect_to spots_path, alert: "抽選するスポットがありません。先にスポットを登録してください。"
+      return
+    end
+
+    # スポットリストからランダムに1つ抽選
+    @selected_spot = my_spots.sample
+    # 結果表示ページへ
+    render :random_draw
+  end
+
   private
 
   def spot_params
