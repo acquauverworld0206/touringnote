@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_group, only: [:show, :edit, :update]
+  before_action :set_group, only: [:show, :edit, :update, :random_draw]
 
   def index
     # 自分が所属しているグループ（ホストとして作成したもの、またはメンバーとして参加しているもの）を一覧表示
@@ -53,6 +53,23 @@ class GroupsController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def random_draw
+    # フォームから送信された抽選個数を取得（安全のため整数に変換）
+    count = params[:count].to_i
+
+    # 候補地リストを取得
+    candidate_spots = @group.candidate_spots
+
+    # 候補地が1つもない場合は、グループ詳細ページに戻ってメッセージを表示
+    if candidate_spots.empty?
+      redirect_to group_path(@group), alert: "抽選する候補地がありません。"
+      return
+    end
+
+    # 候補地リストから指定された個数をランダムに抽選
+    @selected_spots = candidate_spots.sample(count)
   end
 
   private

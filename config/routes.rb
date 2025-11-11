@@ -9,6 +9,9 @@ Rails.application.routes.draw do
   resources :groups do
     resources :invitations, only: [:create], controller: 'groups/invitations' # ネストされた作成アクション
     resources :candidate_spots, only: [:create, :destroy]
+    member do
+      post :random_draw
+    end
   end
 
   resources :candidate_spots, only: [] do
