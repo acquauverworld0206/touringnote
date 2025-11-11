@@ -106,5 +106,43 @@
         </ul>
       </div>
     </div>
+
+    <%# チャット機能 (ページ下部) %>
+    <div class="md:col-span-3 mt-8">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">グループチャット</h2>
+      <div class="bg-white shadow-md rounded-lg">
+        <%# メッセージ表示エリア %>
+        <div id="messages-container" class="h-96 overflow-y-auto p-4 space-y-4">
+          <% @messages.each do |message| %>
+            <% if message.user == current_user %>
+              <%# 自分のメッセージ (右寄せ) %>
+              <div class="flex justify-end">
+                <div class="bg-blue-500 text-white rounded-lg py-2 px-4 max-w-sm">
+                  <p class="break-words"><%= message.content %></p>
+                </div>
+              </div>
+            <% else %>
+              <%# 他人のメッセージ (左寄せ) %>
+              <div class="flex justify-start">
+                <div>
+                  <p class="text-xs text-gray-500 mb-1"><%= message.user.nickname %></p>
+                  <div class="bg-gray-200 text-gray-800 rounded-lg py-2 px-4 max-w-sm">
+                    <p class="break-words"><%= message.content %></p>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+
+        <%# メッセージ投稿フォーム %>
+        <div class="p-4 border-t border-gray-200">
+          <%= form_with(model: [@group, @message], class: "flex space-x-2") do |form| %>
+            <%= form.text_area :content, rows: 1, class: "flex-grow block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-blue focus:border-primary-blue", placeholder: "メッセージを入力..." %>
+            <%= form.submit "送信", class: "inline-block bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 cursor-pointer" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

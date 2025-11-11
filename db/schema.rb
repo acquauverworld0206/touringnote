@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_11_09_063227) do
+ActiveRecord::Schema[7.1].define(version: 2025_11_11_161111) do
   create_table "active_storage_attachments", charset: "utf8mb3", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -85,6 +85,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_09_063227) do
     t.index ["sender_id"], name: "index_invitations_on_sender_id"
   end
 
+  create_table "messages", charset: "utf8mb3", force: :cascade do |t|
+    t.text "content", null: false
+    t.bigint "user_id", null: false
+    t.bigint "group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_messages_on_group_id"
+    t.index ["user_id"], name: "index_messages_on_user_id"
+  end
+
   create_table "spots", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "name", null: false
@@ -131,6 +141,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_09_063227) do
   add_foreign_key "invitations", "groups"
   add_foreign_key "invitations", "users", column: "recipient_id"
   add_foreign_key "invitations", "users", column: "sender_id"
+  add_foreign_key "messages", "groups"
+  add_foreign_key "messages", "users"
   add_foreign_key "spots", "users"
   add_foreign_key "votes", "candidate_spots"
   add_foreign_key "votes", "users"

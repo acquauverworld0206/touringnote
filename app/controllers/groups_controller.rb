@@ -29,6 +29,9 @@ class GroupsController < ApplicationController
     @my_spots = current_user.spots
     # 新しい候補地追加フォーム用のオブジェクト
     @candidate_spot = @group.candidate_spots.new
+    # チャット機能用のインスタンス変数
+    @messages = @group.messages.includes(:user).order(created_at: :asc)
+    @message = Message.new
   end
 
   def edit
