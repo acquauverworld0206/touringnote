@@ -1,102 +1,142 @@
+
+# Touring Note
+
+## アプリケーション概要
+
+ツーリングで訪れたい場所や思い出の場所を、写真や地図と共に記録・管理するためのWebアプリケーションです。
+登録したスポットの中からランダムで行き先を提案する「ランダム抽選機能」も搭載しており、次のツーリング計画を立てる手助けをします。
+
+## URL
+
+[ここにデプロイしたアプリケーションのURLを記載]
+
+## テスト用アカウント
+
+ログイン認証情報です。
+- **メールアドレス**: `[テスト用メールアドレス]`
+- **パスワード**: `[テスト用パスワード]`
+
+## 利用方法
+
+1.  **ユーザー登録/ログイン**: トップページから新規登録またはログインを行います。
+2.  **スポット登録**: ヘッダーの「新しいスポットを登録」から、スポットの名前、説明、住所、写真を登録します。住所を入力すると、自動で緯度・経度が保存されます。
+3.  **スポット一覧**: 登録したスポットが一覧で表示されます。
+4.  **スポット詳細**: スポット名をクリックすると詳細ページに移動し、登録した情報と地図が表示されます。
+5.  **ランダム抽選**: 一覧ページの上部にある「ランダム抽選！」ボタンを押すと、登録済みのスポットの中からランダムで1つが選ばれ、その詳細ページに移動します。
+6.  **スポット編集/削除**: 一覧ページまたは詳細ページから、登録したスポットの情報を編集・削除できます。
+
+## アプリケーションを作成した背景
+
+[このアプリケーションを通じて、どのような人の、どのような課題を解決しようとしているのかを記載します。]
+
+**(記述例)**
+私自身がツーリングを趣味としており、これまで訪れた場所やこれから行きたい場所を簡単に管理したいと思ったのが開発のきっかけです。
+既存の地図アプリでは情報が多すぎたり、自分だけのメモや写真を紐付けて管理しにくかったりする課題がありました。
+そこで、ツーリングに特化したシンプルな機能で「自分だけのツーリングスポットリスト」を作成・管理できるアプリケーションを開発しました。
+また、「どこへ行こうか」と悩む時間も楽しみに変えられるよう、行き先をランダムに提案する機能も加えました。
+
+## 実装した機能についての画像やGIFおよびその説明
+
+（実装した機能について、それぞれどのような特徴があるのかを列挙する形で記載します。画像はGyazoで、GIFはGyazoGIFで撮影し、リンクを貼り付けてください。）
+
+*   **ユーザー認証機能**
+    [ユーザー登録、ログイン、ログアウト画面の画像/GIF]
+    説明: Deviseを導入し、基本的なユーザー認証機能を実装しています。
+
+*   **スポットCRUD機能**
+    [スポット一覧、登録、詳細、編集画面の画像/GIF]
+    説明: ツーリングスポットの登録・一覧・詳細・編集・削除が可能です。画像はActive Storageを利用してアップロードできます。
+
+*   **地図表示機能**
+    [スポット詳細ページの地図表示部分の画像/GIF]
+    説明: 登録された住所を元にGeocoder gemが緯度・経度を自動取得し、スポット詳細ページでGoogle Maps上にピンポイントで表示します。
+
+*   **ランダム抽選機能**
+    [ランダム抽選ボタンを押してから結果が表示されるまでのGIF]
+    説明: 登録したスポットの中からランダムで行き先を一つ選び、その詳細ページへ遷移します。行き先に迷った際のきっかけ作りを提供します。
+
+## 実装予定の機能
+
+*   **Google Places API連携**
+    *   スポット登録時に、施設名や住所のオートコンプリート機能を実装。
+    *   `place_id` を保存し、Google Maps上の正確な情報を元にスポットを管理。
+*   **タグ付け機能**: スポットに「#絶景」「#グルメ」などのタグを付け、タグでの絞り込み検索を可能にする。
+*   **グループ機能**: 複数のユーザーでツーリング計画を共有し、候補地を出し合える機能。
+
 ## データベース設計
 
-### ER図
+[ここにER図の画像を添付]
 
-（ここにER図の画像を挿入すると、より分かりやすくなります）
+（現在の `spots` テーブルと `users` テーブルの構成を元にER図を作成し、ここに画像を挿入してください。`place_id` カラムを追加した場合はそれも反映させてください。）
 
-### テーブル定義
+## 画面遷移図
 
-### `users` テーブル
+[ここに画面遷移図の画像を添付]
 
-Devise利用を想定したテーブルです。
+（Figmaやdraw.ioなどで作成した画面遷移図をここに挿入してください。）
 
-| カラム名              | データ型   | 概要                        | オプション                           |
-| :------------------- | :------- | :------------------------- | :----------------------------------- |
-| `id`                 | `bigint` | 主キー                      | `PK`, `AI`, `unsigned`               |
-| `email`              | `string` | ログインに使用するメールアドレス | `null: false`, `unique`              |
-| `encrypted_password` | `string` | 暗号化されたパスワード         | `null: false`                        |
-| `nickname`           | `string` | アプリ内で表示されるニックネーム | `null: false`                        |
-| `created_at`         | `datetime`| 作成日時                    | `null: false`                        |
-| `updated_at`         | `datetime`| 更新日時                    | `null: false`                        |
+## 開発環境
 
-### Associations
-* `has_many :spots`
-* `has_many :hosted_groups, class_name: 'Group', foreign_key: 'host_id'`
-* `has_many :group_members`
-* `has_many :groups, through: :group_members`
-* `has_many :added_candidate_spots, class_name: 'CandidateSpot', foreign_key: 'added_by_user_id'`
+*   **バックエンド**: Ruby 3.2.0, Ruby on Rails 7.x
+*   **フロントエンド**: HTML, ERB, Tailwind CSS, JavaScript (Hotwire/Importmap)
+*   **データベース**: MySQL (開発環境), PostgreSQL (本番環境)
+*   **認証**: Devise
+*   **画像管理**: Active Storage
+*   **位置情報**: Geocoder, Google Maps API
+*   **デプロイ**: Render
 
-### `spots` テーブル
+## ローカルでの動作方法
 
-| カラム名             | データ型    | 概要                   | オプション                               |
-| :------------------- | :-------- | :--------------------- | :--------------------------------------- |
-| `id`                 | `bigint`  | 主キー                 | `PK`, `AI`, `unsigned`                   |
-| `user_id`            | `bigint`  | 作成したユーザーのID     | `null: false`, `index`, `FK`             |
-| `name`               | `string`  | スポットの正式名称      | `null: false`                            |
-| `description`        | `text`    | メモ                   |                                          |
-| `latitude`           | `decimal` | 緯度                   | `null: false`, `precision: 10, scale: 7` |
-| `longitude`          | `decimal` | 経度                   | `null: false`, `precision: 10, scale: 7` |
-| `photo_url`          | `string`  | 写真のURL              |                                          |
-| `tags`               | `text`    | 分類や特徴を示すタグ（シリアライズ） |                                          |
-| `created_at`         | `datetime`| 作成日時               | `null: false`                            |
-| `updated_at`         | `datetime`| 更新日時               | `null: false`                            |
+1.  **リポジトリのクローン**
+    ```bash
+    git clone [リポジトリのURL]
+    cd touringnote
+    ```
+2.  **RubyとBundlerの準備**
+    ```bash
+    # .ruby-version に記載のRubyバージョンをインストール
+    rbenv install
+    gem install bundler
+    bundle install
+    ```
+3.  **データベースのセットアップ**
+    ```bash
+    # 開発環境用のMySQLサーバーを起動してください
+    bin/rails db:create
+    bin/rails db:migrate
+    ```
+4.  **環境変数の設定**
+    Google Maps APIキーを環境変数として設定します。`.env` ファイルをプロジェクトルートに作成し、以下を記述してください。
+    ```
+    Maps_API_KEY="YOUR_GOOGLE_MAPS_API_KEY"
+    ```
+5.  **サーバーの起動**
+    ```bash
+    bin/rails server
+    ```
+    ブラウザで `http://localhost:3000` にアクセスしてください。
 
-### Associations
-* `belongs_to :user`
-* `has_many :candidate_spots`
+## 工夫したポイント
 
-### `groups` テーブル
+[制作背景・使用技術・開発方法・タスク管理など、企業へＰＲしたい事柄を記載します。]
 
-| カラム名             | データ型    | 概要                      | オプション                               |
-| :------------------- | :-------- | :------------------------ | :--------------------------------------- |
-| `id`                 | `bigint`  | 主キー                    | `PK`, `AI`, `unsigned`                   |
-| `name`               | `string`  | グループの計画名          | `null: false`                            |
-| `host_id`            | `bigint`  | 主要な管理者となるユーザーID | `null: false`, `index`, `FK(users.id)`   |
-| `description`        | `text`    | 詳細情報                  |                                          |
-| `status`             | `string`  | グループの計画状態        | `null: false`                            |
-| `created_at`         | `datetime`| 作成日時                  | `null: false`                            |
-| `updated_at`         | `datetime`| 更新日時                  | `null: false`                            |
+**(記述例)**
+*   **モダンなフロントエンド開発**: Rails 7標準のHotwire (Turbo Drive) とImportmapを活用し、SPAライクな軽快な操作感を実現しつつ、JavaScriptのビルド環境をシンプルに保ちました。CSSフレームワークにはTailwind CSSを採用し、効率的でメンテナンス性の高いUI構築を心がけました。
+*   **外部APIの活用**: Geocoder gemとGoogle Maps APIを連携させ、住所文字列から緯度・経度への変換と地図表示を自動化しました。これにより、ユーザーは住所を入力するだけで視覚的に場所を確認できるUXを提供しています。
+*   **本番環境を意識した開発**: 開発環境ではMySQLを、Renderでのデプロイを想定して本番環境ではPostgreSQLを使用する構成にしました。`database.yml`で環境ごとの設定を分離し、ポータビリティの高いアプリケーションを目指しました。
 
-### Associations
-* `belongs_to :host, class_name: 'User'`
-* `has_many :group_members`
-* `has_many :users, through: :group_members`
-* `has_many :candidate_spots`
+## 改善点
 
-### `group_members` テーブル
+[より改善するとしたらどこか、それはどのようにしてやるのかを記載します。]
 
-中間テーブルです。
+**(記述例)**
+*   **テストコードの拡充**: 現在はモデルの単体テストが中心ですが、System Spec（E2Eテスト）を拡充し、ユーザー操作全体の品質を担保したいです。特に、JavaScriptが関わる地図表示やAPI連携部分のテストを強化します。
+*   **N+1問題の解消**: スポット一覧ページなどで将来的にN+1問題が発生する可能性があるため、`bullet` gemを導入して問題を検知し、`includes`メソッドを用いて積極的にクエリを最適化していきます。
+*   **コンポーネント化**: Viewで繰り返し使われるUI部品（ボタンやカードなど）をViewComponentを用いてコンポーネント化し、コードの再利用性を高め、見通しを良くしたいです。
 
-| カラム名             | データ型    | 概要               | オプション                               |
-| :------------------- | :-------- | :----------------- | :--------------------------------------- |
-| `id`                 | `bigint`  | 主キー             | `PK`, `AI`, `unsigned`                   |
-| `group_id`           | `bigint`  | グループのID         | `null: false`, `index`, `FK`             |
-| `user_id`            | `bigint`  | 参加ユーザーのID     | `null: false`, `index`, `FK`             |
-| `role`               | `string`  | グループ内での役割   | `null: false`                            |
-| `created_at`         | `datetime`| 作成日時(参加日時)   | `null: false`                            |
-| `updated_at`         | `datetime`| 更新日時           | `null: false`                            |
+## 制作時間
 
-### Associations
-* `belongs_to :user`
-* `belongs_to :group`
-
-### `candidate_spots` テーブル
-
-中間テーブルです。
-
-| カラム名             | データ型    | 概要                               | オプション                                       |
-| :------------------- | :-------- | :--------------------------------- | :----------------------------------------------- |
-| `id`                 | `bigint`  | 主キー                             | `PK`, `AI`, `unsigned`                           |
-| `group_id`           | `bigint`  | 候補地が属するグループID           | `null: false`, `index`, `FK`                     |
-| `spot_id`            | `bigint`  | 候補地として提案された元のスポット | `null: false`, `index`, `FK`                     |
-| `added_by_user_id`   | `bigint`  | 提案したユーザー                   | `null: false`, `index`, `FK(users.id)`           |
-| `votes`              | `text`    | 投票したユーザーのID配列（シリアライズ） |                                                  |
-| `is_decided`         | `boolean` | 最終ルートとして決定されたかのフラグ | `null: false`, `default: false`                  |
-| `decided_order`      | `integer` | 訪問順序                           |                                                  |
-| `created_at`         | `datetime`| 作成日時                           | `null: false`                                    |
-| `updated_at`         | `datetime`| 更新日時                           | `null: false`                                    |
-
-### Associations
-* `belongs_to :group`
-* `belongs_to :spot`
-* `belongs_to :added_by, class_name: 'User', foreign_key: 'added_by_user_id'`
+*   **総制作時間**: [例: 約XX時間]
+    *   要件定義・設計: [例: XX時間]
+    *   開発: [例: XX時間]
+    *   テスト・デプロイ: [例: XX時間]
