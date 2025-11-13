@@ -15,8 +15,8 @@ https://touringnote-2.onrender.com
 ## テスト用アカウント
 
 ログイン認証情報です。
-- **メールアドレス**: acqua0206@gmail.com
-- **パスワード**: acqua0206
+- **メールアドレス**: test0206@gmail.com
+- **パスワード**: test0206
 
 ## 利用方法
 
